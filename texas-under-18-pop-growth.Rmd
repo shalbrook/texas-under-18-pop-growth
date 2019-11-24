@@ -1,0 +1,103 @@
+---
+title: "Texas Under-18 Population Growth"
+knit: (function(input_file, encoding) {
+  out_dir <- 'docs';
+  rmarkdown::render(input_file,
+ encoding=encoding,
+ output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
+
+---
+
+```{r}
+library(tidyverse)
+library(tidycensus)
+options(tigris_use_cache = TRUE)
+```
+
+First, compare counties in the six biggest states to see how Texas counties stack up in under-18 population growth.
+
+```{r}
+big10 <- get_acs("county", variables="B09001_001", year = 2010, output="tidy", state=c("Texas","California","New York","Illinois","Pennsylvania","Florida"), geometry=FALSE)
+big17 <- get_acs("county", variables="B09001_001", year = 2017, output="tidy", state=c("Texas","California","New York","Illinois","Pennsylvania","Florida"), geometry=FALSE)
+big10 <- big10 %>% rename('e10' = 'estimate') %>% select(c(-variable, -moe))
+big17 <- big17 %>% rename('e17' = 'estimate') %>% select(c(-variable, -moe))
+big <- inner_join(big10, big17, by="NAME")
+big <- mutate(big, diff = e17 - e10)
+big <- mutate(big, pct = (e17 / e10) - 1)
+big <- arrange(big, desc(diff))
+big[1:20,]
+```
+
+Just counties in Texas.
+
+```{r}
+texas_under18 <- filter(big, str_detect(NAME, 'Texas')) %>% arrange(desc(diff))
+texas_under18[1:20,]
+```
+
+And counties in all states.
+
+```{r}
+all10 <- get_acs("county", variables="B09001_001", year = 2010, output="tidy", geometry=FALSE)
+all17 <- get_acs("county", variables="B09001_001", year = 2017, output="tidy", geometry=FALSE)
+all10 <- all10 %>% rename('e10' = 'estimate') %>% select(c(-variable, -moe))
+all17 <- all17 %>% rename('e17' = 'estimate') %>% select(c(-variable, -moe))
+all <- inner_join(all10, all17, by="NAME")
+all <- mutate(all, diff = e17 - e10)
+all <- arrange(all, desc(diff))
+all[1:20,]
+```
+
+Next we look at migration from other states and other countries.
+
+```{r}
+# also look at mobility/migration using summaries of B07001_002 (ages 0-4) and _003 (ages 5-17)
+# and variables of 066 and 067 (moved from different state) and 082 and 083 (moved from abroad)
+
+# what I want: a table with each county and fields for total # 1-17, # migrated from other state, # migrated from other country
+# this can also be adapted to compare all counties in all states simply by removing the "state" parameter from the get_acs() call
+migr17 <- get_acs("county", variables = c("B07001_002", "B07001_003", "B07001_066", "B07001_082", "B07001_067", "B07001_083"), year = 2017, output = "tidy", state = 48, geometry = FALSE)
+migr17 <- migr17 %>% select(-moe) %>% spread(variable, estimate)
+migr17 <- migr17 %>% mutate(total_kids = B07001_002 + B07001_003)
+migr17 <- migr17 %>% mutate(another_state = B07001_066 + B07001_067)
+migr17 <- migr17 %>% mutate(another_country = B07001_082 + B07001_083)
+migr17 <- migr17 %>% select(-starts_with('B07'))
+migr17 <- migr17 %>% mutate(pct_state = another_state / total_kids)
+migr17 <- migr17 %>% mutate(pct_country = another_country / total_kids)
+migr17 <- migr17 %>% mutate(total_migrants = another_state + another_country)
+migr17 <- migr17 %>% mutate(pct_migrants = total_migrants / total_kids)
+migr17 <- migr17 %>% arrange(desc(total_migrants))
+migr17[1:20,]
+```
+
+
+```{r}
+# this is just to get the geometry for the map
+
+under18 <- get_acs(state = "TX", geography = "county", variables = "B09001_001", geometry = TRUE, year = 2017)
+under18$NAME <- sub(", Texas", "", under18$NAME)
+
+# this is to map the Texas Demographic Center's projected differences by county and ethnicity between 2020 and 2050.
+# Can show it by percentages or by numbers.
+# https://demographics.texas.gov/Data/TPEPP/Projections/
+
+library(readxl)
+X2018allcntyagegrp <- read_excel("2018allcntyagegrp.xlsx", sheet = "diffs and pcts only")
+
+counties <- inner_join(X2018allcntyagegrp, under18, by = c("Row Labels" = "NAME"))
+
+# lots of ways to do these images
+ggplot(data = counties, aes(fill = pct_total)) + geom_sf() + scale_fill_gradient2(high = "dark blue")
+ggplot(data = counties, aes(fill = pct_white)) + geom_sf() + scale_fill_gradient2(high = "dark blue")
+ggplot(data = counties, aes(fill = pct_black)) + geom_sf() + scale_fill_gradient2(high = "dark blue")
+ggplot(data = counties, aes(fill = pct_hisp)) + geom_sf() + scale_fill_gradient2(high = "dark blue")
+ggplot(data = counties, aes(fill = pct_asian)) + geom_sf() + scale_fill_gradient2(high = "dark blue")
+ggplot(data = counties, aes(fill = pct_other)) + geom_sf() + scale_fill_gradient2(high = "dark blue")
+
+ggplot(data = counties, aes(fill = diff_white)) + geom_sf() + scale_fill_gradient2(high = "dark green")
+ggplot(data = counties, aes(fill = diff_black)) + geom_sf() + scale_fill_gradient2(high = "dark green")
+ggplot(data = counties, aes(fill = diff_hisp)) + geom_sf() + scale_fill_gradient2(high = "dark green")
+ggplot(data = counties, aes(fill = diff_asian)) + geom_sf() + scale_fill_gradient2(high = "dark green")
+ggplot(data = counties, aes(fill = diff_other)) + geom_sf() + scale_fill_gradient2(high = "dark green")
+```
+
