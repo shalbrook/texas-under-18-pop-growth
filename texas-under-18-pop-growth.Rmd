@@ -30,7 +30,11 @@ big <- inner_join(big10, big17, by="NAME")
 big <- mutate(big, diff = e17 - e10)
 big <- mutate(big, pct = (e17 / e10) - 1)
 big <- arrange(big, desc(diff))
-big[1:20,]
+```
+
+```{r echo = FALSE, results = "asis"}
+library(knitr)
+kable(big[1:20,], caption = "Top counties in under-18 population growth 2010-2017 among the six largest states.")
 ```
 
 Just counties in Texas.

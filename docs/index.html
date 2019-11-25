@@ -217,31 +217,203 @@ big17 &lt;- big17 %&gt;% rename('e17' = 'estimate') %&gt;% select(c(-variable, -
 big &lt;- inner_join(big10, big17, by=&quot;NAME&quot;)
 big &lt;- mutate(big, diff = e17 - e10)
 big &lt;- mutate(big, pct = (e17 / e10) - 1)
-big &lt;- arrange(big, desc(diff))
-big[1:20,]</code></pre>
-<pre><code>## # A tibble: 20 x 7
-##    GEOID.x NAME                            e10 GEOID.y    e17   diff    pct
-##    &lt;chr&gt;   &lt;chr&gt;                         &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-##  1 48201   Harris County, Texas        1116043 48201   1.23e6 109016 0.0977
-##  2 48439   Tarrant County, Texas        489908 48439   5.34e5  44171 0.0902
-##  3 48029   Bexar County, Texas          449711 48029   4.93e5  43507 0.0967
-##  4 48113   Dallas County, Texas         643888 48113   6.83e5  38994 0.0606
-##  5 48157   Fort Bend County, Texas      162373 48157   1.99e5  36483 0.225 
-##  6 48085   Collin County, Texas         212857 48085   2.46e5  32947 0.155 
-##  7 48453   Travis County, Texas         234411 48453   2.67e5  32794 0.140 
-##  8 48121   Denton County, Texas         174237 48121   2.01e5  26972 0.155 
-##  9 48215   Hidalgo County, Texas        257195 48215   2.82e5  24334 0.0946
-## 10 12095   Orange County, Florida       268371 12095   2.92e5  23538 0.0877
-## 11 48339   Montgomery County, Texas     119483 48339   1.43e5  23156 0.194 
-## 12 48491   Williamson County, Texas     113286 48491   1.36e5  22626 0.200 
-## 13 12057   Hillsborough County, Flori…  292405 12057   3.12e5  19302 0.0660
-## 14 06085   Santa Clara County, Califo…  421580 06085   4.35e5  13436 0.0319
-## 15 36081   Queens County, New York      460988 36081   4.74e5  12707 0.0276
-## 16 12097   Osceola County, Florida       68872 12097   8.14e4  12536 0.182 
-## 17 36047   Kings County, New York       596320 36047   6.09e5  12495 0.0210
-## 18 12011   Broward County, Florida      395063 12011   4.07e5  11577 0.0293
-## 19 12099   Palm Beach County, Florida   267882 12099   2.78e5  10237 0.0382
-## 20 48209   Hays County, Texas            35652 48209   4.57e4  10043 0.282</code></pre>
+big &lt;- arrange(big, desc(diff))</code></pre>
+<table>
+<caption>Top counties in under-18 population growth 2010-2017 among the six largest states.</caption>
+<thead>
+<tr class="header">
+<th align="left">GEOID.x</th>
+<th align="left">NAME</th>
+<th align="right">e10</th>
+<th align="left">GEOID.y</th>
+<th align="right">e17</th>
+<th align="right">diff</th>
+<th align="right">pct</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">48201</td>
+<td align="left">Harris County, Texas</td>
+<td align="right">1116043</td>
+<td align="left">48201</td>
+<td align="right">1225059</td>
+<td align="right">109016</td>
+<td align="right">0.0976808</td>
+</tr>
+<tr class="even">
+<td align="left">48439</td>
+<td align="left">Tarrant County, Texas</td>
+<td align="right">489908</td>
+<td align="left">48439</td>
+<td align="right">534079</td>
+<td align="right">44171</td>
+<td align="right">0.0901618</td>
+</tr>
+<tr class="odd">
+<td align="left">48029</td>
+<td align="left">Bexar County, Texas</td>
+<td align="right">449711</td>
+<td align="left">48029</td>
+<td align="right">493218</td>
+<td align="right">43507</td>
+<td align="right">0.0967444</td>
+</tr>
+<tr class="even">
+<td align="left">48113</td>
+<td align="left">Dallas County, Texas</td>
+<td align="right">643888</td>
+<td align="left">48113</td>
+<td align="right">682882</td>
+<td align="right">38994</td>
+<td align="right">0.0605602</td>
+</tr>
+<tr class="odd">
+<td align="left">48157</td>
+<td align="left">Fort Bend County, Texas</td>
+<td align="right">162373</td>
+<td align="left">48157</td>
+<td align="right">198856</td>
+<td align="right">36483</td>
+<td align="right">0.2246864</td>
+</tr>
+<tr class="even">
+<td align="left">48085</td>
+<td align="left">Collin County, Texas</td>
+<td align="right">212857</td>
+<td align="left">48085</td>
+<td align="right">245804</td>
+<td align="right">32947</td>
+<td align="right">0.1547847</td>
+</tr>
+<tr class="odd">
+<td align="left">48453</td>
+<td align="left">Travis County, Texas</td>
+<td align="right">234411</td>
+<td align="left">48453</td>
+<td align="right">267205</td>
+<td align="right">32794</td>
+<td align="right">0.1398996</td>
+</tr>
+<tr class="even">
+<td align="left">48121</td>
+<td align="left">Denton County, Texas</td>
+<td align="right">174237</td>
+<td align="left">48121</td>
+<td align="right">201209</td>
+<td align="right">26972</td>
+<td align="right">0.1548006</td>
+</tr>
+<tr class="odd">
+<td align="left">48215</td>
+<td align="left">Hidalgo County, Texas</td>
+<td align="right">257195</td>
+<td align="left">48215</td>
+<td align="right">281529</td>
+<td align="right">24334</td>
+<td align="right">0.0946130</td>
+</tr>
+<tr class="even">
+<td align="left">12095</td>
+<td align="left">Orange County, Florida</td>
+<td align="right">268371</td>
+<td align="left">12095</td>
+<td align="right">291909</td>
+<td align="right">23538</td>
+<td align="right">0.0877069</td>
+</tr>
+<tr class="odd">
+<td align="left">48339</td>
+<td align="left">Montgomery County, Texas</td>
+<td align="right">119483</td>
+<td align="left">48339</td>
+<td align="right">142639</td>
+<td align="right">23156</td>
+<td align="right">0.1938016</td>
+</tr>
+<tr class="even">
+<td align="left">48491</td>
+<td align="left">Williamson County, Texas</td>
+<td align="right">113286</td>
+<td align="left">48491</td>
+<td align="right">135912</td>
+<td align="right">22626</td>
+<td align="right">0.1997246</td>
+</tr>
+<tr class="odd">
+<td align="left">12057</td>
+<td align="left">Hillsborough County, Florida</td>
+<td align="right">292405</td>
+<td align="left">12057</td>
+<td align="right">311707</td>
+<td align="right">19302</td>
+<td align="right">0.0660112</td>
+</tr>
+<tr class="even">
+<td align="left">06085</td>
+<td align="left">Santa Clara County, California</td>
+<td align="right">421580</td>
+<td align="left">06085</td>
+<td align="right">435016</td>
+<td align="right">13436</td>
+<td align="right">0.0318706</td>
+</tr>
+<tr class="odd">
+<td align="left">36081</td>
+<td align="left">Queens County, New York</td>
+<td align="right">460988</td>
+<td align="left">36081</td>
+<td align="right">473695</td>
+<td align="right">12707</td>
+<td align="right">0.0275647</td>
+</tr>
+<tr class="even">
+<td align="left">12097</td>
+<td align="left">Osceola County, Florida</td>
+<td align="right">68872</td>
+<td align="left">12097</td>
+<td align="right">81408</td>
+<td align="right">12536</td>
+<td align="right">0.1820188</td>
+</tr>
+<tr class="odd">
+<td align="left">36047</td>
+<td align="left">Kings County, New York</td>
+<td align="right">596320</td>
+<td align="left">36047</td>
+<td align="right">608815</td>
+<td align="right">12495</td>
+<td align="right">0.0209535</td>
+</tr>
+<tr class="even">
+<td align="left">12011</td>
+<td align="left">Broward County, Florida</td>
+<td align="right">395063</td>
+<td align="left">12011</td>
+<td align="right">406640</td>
+<td align="right">11577</td>
+<td align="right">0.0293042</td>
+</tr>
+<tr class="odd">
+<td align="left">12099</td>
+<td align="left">Palm Beach County, Florida</td>
+<td align="right">267882</td>
+<td align="left">12099</td>
+<td align="right">278119</td>
+<td align="right">10237</td>
+<td align="right">0.0382146</td>
+</tr>
+<tr class="even">
+<td align="left">48209</td>
+<td align="left">Hays County, Texas</td>
+<td align="right">35652</td>
+<td align="left">48209</td>
+<td align="right">45695</td>
+<td align="right">10043</td>
+<td align="right">0.2816953</td>
+</tr>
+</tbody>
+</table>
 <p>Just counties in Texas.</p>
 <pre class="r"><code>texas_under18 &lt;- filter(big, str_detect(NAME, 'Texas')) %&gt;% arrange(desc(diff))
 texas_under18[1:20,]</code></pre>
